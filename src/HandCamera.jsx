@@ -2,6 +2,7 @@
 // React component to capture webcam frames and send to worker
 import { useEffect, useRef } from 'react'
 import { initHandWorker, sendFrameToWorker, onHandWorkerMessage } from './handWorkerClient'
+import { useHandStore } from './handStore'
 
 export default function HandCamera({ onResults }) {
   const videoRef = useRef()
@@ -9,7 +10,10 @@ export default function HandCamera({ onResults }) {
     let running = true
     initHandWorker()
     const handleMsg = (data) => {
-      if (data.type === 'results' && onResults) onResults(data.results)
+      if (data.type === 'results') {
+        useHandStore.getState().setLandmarks(data.results)
+        if (onResults) onResults(data.results)
+      }
     }
     onHandWorkerMessage(handleMsg)
     navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
