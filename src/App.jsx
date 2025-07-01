@@ -3,6 +3,7 @@ import { OrbitControls } from '@react-three/drei'
 import { EffectComposer, N8AO } from '@react-three/postprocessing'
 import { useState } from 'react'
 import './App.css'
+import HandCamera from './HandCamera'
 
 function Scene({ showAO }) {
   return (
@@ -30,6 +31,7 @@ function App() {
       <button style={{position:'absolute',zIndex:1,top:20,left:20}} onClick={() => setShowAO(v => !v)}>
         {showAO ? 'Disable AO' : 'Enable AO'}
       </button>
+      <HandCamera onResults={console.log} />
       <Canvas>
         <Scene showAO={showAO} />
       </Canvas>
