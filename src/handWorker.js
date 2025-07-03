@@ -1,23 +1,33 @@
 // src/handWorker.js
-// Web Worker for running MediaPipe HandLandmarker (Vite-compatible, ES module)
+// Web Worker for running MediaPipe HandLandmarker (classic worker)
 
-import { createTasksVision } from '@mediapipe/tasks-vision';
+
+// Load MediaPipe Tasks Vision library
+self.importScripts('/vision_bundle.classic.js');
 
 let handLandmarker;
 
-self.postMessage({ type: 'worker-loaded' });
-
 self.onmessage = async (e) => {
   if (e.data.type === 'init') {
-    // Initialize MediaPipe HandLandmarker using local package
-    const vision = await createTasksVision();
-    handLandmarker = await vision.HandLandmarker.create();
+      const vision = await self.mp.FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+  );
+    handLandmarker = await self.mp.HandLandmarker.createFromOptions(vision,{
+      baseOptions: {
+        modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+        delegate: "GPU"
+      },
+      runningMode: "VIDEO",
+      numHands: 2
+    });
     self.postMessage({ type: 'ready' });
   } else if (e.data.type === 'frame' && handLandmarker) {
+    console.log('frame')
     const { imageBitmap } = e.data;
-    // Run inference
-    const results = await handLandmarker.detect(imageBitmap);
+    const results = await handLandmarker.detectForVideo(imageBitmap, performance.now());
     self.postMessage({ type: 'results', results });
     imageBitmap.close();
   }
 };
+
+self.postMessage({ type: 'worker-loaded' });

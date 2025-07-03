@@ -7,7 +7,8 @@ const listeners = [];
 
 export function initHandWorker() {
   if (!worker) {
-    worker = new Worker(new URL('./handWorker.js', import.meta.url), { type: 'module' });
+    // Changed worker type to 'classic'
+    worker = new Worker(new URL('./handWorker.js', import.meta.url));
     worker.onmessage = (e) => {
       if (e.data.type === 'worker-loaded') {
         console.log('Worker loaded successfully!');

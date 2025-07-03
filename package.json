@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:vision-classic": "rollup -c rollup.vision.config.js"
+
   },
   "dependencies": {
     "@react-three/drei": "^10.4.2",
@@ -20,6 +22,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
@@ -27,6 +31,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
+    "rollup": "^4.44.1",
     "vite": "^7.0.0"
   }
 }
